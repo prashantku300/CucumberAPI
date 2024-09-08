@@ -50,6 +50,9 @@ public class AddPlace {
 		
 	    String	id=res.getId();
 	    System.out.println(id);
+	    
+	    String refer =res.getReference();
+	    System.out.println(refer);
 
 	}
 	
