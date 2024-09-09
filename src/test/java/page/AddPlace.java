@@ -8,10 +8,11 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import pojo.AddNewPlaceData;
 import pojo.Location;
 import pojo.NewPageResponse;
@@ -44,14 +45,18 @@ public class AddPlace {
 		
 	RequestSpecification req=	new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").
 		addQueryParam("key", "qaclick123").setContentType(ContentType.JSON).build();
+	
+    ResponseSpecification resq=	new ResponseSpecBuilder().expectStatusCode(200).
+        		expectHeader("Content-Type", "application/json;charset=UTF-8").build();
+    
 		
 	//	RestAssured.baseURI="https://rahulshettyacademy.com";
-			
 		NewPageResponse res = given().log().all().spec(req).body(d).
 		when().post("/maps/api/place/add/json").
-		then().log().all().assertThat().statusCode(200).extract().response().as(NewPageResponse.class);
+		then().log().all().assertThat().spec(resq).extract().response().as(NewPageResponse.class);
+		
 		String status=  res.getStatus();
-		assertEquals(status, "OK"); 
+		assertEquals(status, "OK");
 		
 		String scope=res.getScope();
 		assertEquals(scope, "APP");
