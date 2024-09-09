@@ -9,6 +9,9 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import pojo.AddNewPlaceData;
 import pojo.Location;
 import pojo.NewPageResponse;
@@ -36,10 +39,15 @@ public class AddPlace {
 		d.setWebsite("http://google.com");
 		d.setLanguage("French-IN");
 		
+		//Request SpecBuilder is used to specified a fixed Base URI and parameter so 
+		// we don't need to write it again in cod we can call it by reference variable.
 		
-		RestAssured.baseURI="https://rahulshettyacademy.com";
+	RequestSpecification req=	new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").
+		addQueryParam("key", "qaclick123").setContentType(ContentType.JSON).build();
+		
+	//	RestAssured.baseURI="https://rahulshettyacademy.com";
 			
-		NewPageResponse res = given().log().all().queryParam("key", "qaclick123").body(d).
+		NewPageResponse res = given().log().all().spec(req).body(d).
 		when().post("/maps/api/place/add/json").
 		then().log().all().assertThat().statusCode(200).extract().response().as(NewPageResponse.class);
 		String status=  res.getStatus();
